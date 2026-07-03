@@ -1,0 +1,26 @@
+name: Daily Countdown
+
+on:
+  schedule:
+    # 00:05 по Москве (UTC+3) = 21:05 UTC предыдущего дня
+    - cron: "5 21 * * *"
+  workflow_dispatch:
+
+jobs:
+  send-countdown:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Send daily message
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+        run: python main.py
